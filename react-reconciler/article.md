@@ -7,3 +7,5 @@ It is important to understand that react-reconciler have no notion of instances 
 So lets start with defining what exactly do we want to build and types. As our goal is to start simple and just build a proof of concept solution we will create a simple type system.
 
 Can we go deeper and integrate it inside another component?
+
+Reconciler allows us to build our own object model without any dependencies or DOM. Even better react-reconciler comes with typescript types where we can define our own model. In our example we will build simple canvas targeted model that will allow simple color and shapes to be drawn on the canvas as well as position. So let's define our type system§

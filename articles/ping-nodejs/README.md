@@ -180,3 +180,5 @@ buffer.writeUInt32BE(uint32[1], 12);
 ```
 
 ## Conclusion
+
+This is obviously not a replacement for production grade ping command and there are a lot of considerations that needs to be addressed to make it real (e.g., error handling). However, I hope it is a good starting point to better understand how binary level protocols actually work, how to debug them, and how to not be curious and read original sources.

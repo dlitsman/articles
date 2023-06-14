@@ -185,18 +185,18 @@ That is it! We need to precisely measure the time between request and response t
 
 ### Time measurement
 
-If you pay closer attention to the original ping implementation, you will notice a special trick to make our client stateless and don't require us to track state for request/response time as ping protocol requires sending back the same payload we send as part of the request. So we can send time as part of the payload! This is what the original UNIX implementation did.
+If you pay closer attention to the original ping implementation, you will notice a special trick to make our client stateless and don't require us to track state for request/response time as ping protocol requires sending back the same payload we send as part of the request. We can send time as part of the payload! This is what the original UNIX implementation did.
 
 Unix implementation of ping is open source, so we can learn some tricks from reading [source code](https://github.com/dspinellis/unix-history-repo/blob/BSD-4_3/usr/src/etc/ping.c#L233). Here, it adds `timeval` as part of the payload.
 
 ```
 struct timeval {
-               time_t      tv_sec;     /* seconds */
-               suseconds_t tv_usec;    /* microseconds */
-           };
+  time_t      tv_sec;     /* seconds */
+  suseconds_t tv_usec;    /* microseconds */
+};
 ```
 
-Let's use the same approach with our client. We will send a precise time when we send the command and compare it when we get the message. Standard Date.now() will not work well in this case as we deal with high-precision data. To get accurate time, we can use [Performance](https://nodejs.org/api/globals.html#performance) API. So let's put it into practice and add it to the payload together with the payload itself.
+Let's use the same approach in our client. We will send a precise time when we send the command and compare it when we get a response. Standard Date.now() will not work well in this case as we deal with high-precision data. To get accurate time, we can use [Performance](https://nodejs.org/api/globals.html#performance) API. So let's put it into practice and add it to the payload together with the payload itself.
 
 ```js
 const time = performance.timeOrigin + performance.now();

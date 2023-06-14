@@ -220,7 +220,11 @@ return buffer;
 
 ## Conclusion
 
-Now we just need to add a couple of utility functions, read arguments, deal with errors, and connect all the pieces to get a functional ping client written from scratch.
+I intentionally simplified some things and cut some corners. Ideally, we will need to add error logging, keep track of statistics, etc. We also need to make sure to filter out all other ICMP packets that are not part of our ping request by [checking the type of request and identifier](https://github.com/dspinellis/unix-history-repo/blob/BSD-4_3/usr/src/etc/ping.c#L335).
+
+However, I hope it was an interesting journey on how to implement low-level binary protocols, measure time, debug network requests, and read the source code.
+
+I put together all the code here in [this repo](https://github.com/dlitsman/ping-nodejs). It has some extra code to connect all the pieces together. Just run
 
 ```
 $ node index.js 1.1.1.1
@@ -230,5 +234,3 @@ PING 1.1.1.1 (1.1.1.1): 28 data bytes
 36 bytes from 1.1.1.1: icmp_seq=2 ttl=59 time=16.101806640625 ms
 ...
 ```
-
-I hope it was helpful information for you and that you learned a trick or two. You can find the full source code in [Github repo](https://github.com/dlitsman/ping-nodejs)

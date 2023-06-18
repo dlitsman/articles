@@ -133,7 +133,7 @@ function createPingBuffer(identifier, sequenceNumber, payload) {
 }
 ```
 
-You might notice weird BE suffix in the function name, this stands for Big Endian. This is [endianness](https://en.wikipedia.org/wiki/Endianness). Some protocols use LE (little endian). This is just a way to pack
+You might notice a weird BE suffix in the function name; it stands for Big-Endian. This is [endianness](https://en.wikipedia.org/wiki/Endianness). There are two ways how you can pack multi-byte values in the buffer. This defines which byte should be first/last.
 
 That is it! We should be able to send ping requests now. Let's check if it works using Wireshark.
 
@@ -155,7 +155,7 @@ Here we will need to use [bitwise operations](https://developer.mozilla.org/en-U
 
 ```js
 function getIPProtocolHeaderSize(buffer) {
-  const versionAndIHL = buffer.readInt8();
+  const versionAndIHL = buffer.readUInt8();
   const IHL = versionAndIHL & 0b00001111; // will remove everything in the first 4 bits -> 0x0000XXXX
   return IHL * 4; // multiply by 4 as it contains number of 32-bit (4 bytes) words to get total size in bytes
 }
@@ -202,14 +202,14 @@ struct timeval {
 };
 ```
 
-Let's use the same approach in our client. We will send a precise time when we send the command and compare it when we get a response. Standard Date.now() will not work well in this case as we deal with high-precision data. To get accurate time, we can use [Performance](https://nodejs.org/api/globals.html#performance) API. So let's put it into practice and add it to the payload together with the payload itself.
+Let's use the same approach in our client. We will send a precise time when we send the command and compare it when we get a response. Standard `Date.now()` will not work well in this case as we deal with high-precision data. To get accurate time, we can use [Performance](https://nodejs.org/api/globals.html#performance) API. So let's put it into practice and add it to the payload together with the payload itself.
 
 ```js
 const time = performance.timeOrigin + performance.now();
 
 const uint32 = new Uint32Array(2);
-uint32[0] = time / 1000;
-uint32[1] = (time - uint32[0] * 1000) * 1000;
+uint32[0] = time / 1000; // seconds
+uint32[1] = (time - uint32[0] * 1000) * 1000; // microseconds
 
 // write it as first 8 bytes of payload
 buffer.writeUInt32BE(uint32[0], 8);
@@ -230,7 +230,7 @@ I intentionally simplified some things and cut some corners. Ideally, we will ne
 
 However, I hope it was an interesting journey on how to implement low-level binary protocols, measure time, debug network requests, do bit manipulations, and read the source code. There is a lot to learn from other open source project.
 
-I put together all the code here in [this repo](https://github.com/dlitsman/ping-nodejs). It has some extra code to connect all the pieces together. Just run
+I put together all the code here in [this repo](https://github.com/dlitsman/ping-nodejs). It has some extra code to connect all the pieces together. Just run `node index.js 1.1.1.1`
 
 ```
 $ node index.js 1.1.1.1

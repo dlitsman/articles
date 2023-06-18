@@ -43,11 +43,13 @@ Two easy steps:
 1. Start Wireshark and choose what to capture (in my case wifi that is connected to the Internet)
 2. Add filter icmp in the top bar as it will produce a lot of noise
 
-This is more or less what you will see
+Now execute `$ ping 1.1.1.1` command in the terminal. This is more or less what you will see
 
 ![image](./imgs/wireshark.png)
 
-Wireshark is quite powerful and knows how to handle ICMP commands. It will be very helpful to validate our setup. You can also hover over Packet Bytes to highlight what they are responsible for. In this case, you can see the Type of request is equal to 8, which is exactly what we would expect from our protocol description above.
+You can see all requests and responses of the ping command. Even better, Wireshark is quite powerful and knows how to handle ICMP commands. So it will help you parse bits to more meaningful and easier-to-read structures. You can also clearly see the layered structure of network protocols (Ethernet -> IP -> ICMP).
+
+This will be very helpful in validating our setup. You can also hover over Packet Bytes to highlight what they are responsible for. In this case, you can see the Type of request is equal to 8, which is exactly what we would expect from our protocol described above.
 
 ## Let's code
 

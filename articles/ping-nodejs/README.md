@@ -1,12 +1,14 @@
-# Building ping command in Node.js for fun. Short practical guide to Wireshark, buffers, sockets, and bit manipulation
+# Building ping command in Node.js for fun. Short practical guide to buffers, sockets, bit manipulation, and Wireshark.
 
-I find exploring some unknown things helpful in understanding how the system works. You probably used the `ping` command multiple times to test the connection to the server. This is a widely available tool. Have you ever thought about how exactly it works and how to implement it yourself?
+![image](./imgs/intro.png)
 
-In this article, I'll share my learning on implementing some low-level binary protocols using `ping` as an example. I'll share some tips on debugging, using binary protocols, and manipulating bits for the greater good. So let's dive in.
+You probably used the `ping` command multiple times to test the connection to the server. This is a widely available tool. Have you ever thought about how exactly it works and how to implement it yourself? I find exploring some unknown things helpful in understanding how the system works, and in this article, I'll try to explain how exactly it works and how to recreate it from scratch in Node.js.
+
+This is not a deep dive by any means, but we will cover some basics on how to implement the binary protocol, manipulate bits, debug network requests, measure time precisely, and more. So let's dive in.
 
 ## What is ping?
 
-"`ping` is a computer network administration software utility used to test the reachability of a host on an Internet Protocol (IP) network... Ping measures the round-trip time for messages sent from the originating host to a destination computer that are echoed back to the source." (c) [wiki](<https://en.wikipedia.org/wiki/Ping_(networking_utility)>)
+In case if you have never used `ping` before, "`ping` is a computer network administration software utility used to test the reachability of a host on an Internet Protocol (IP) network... Ping measures the round-trip time for messages sent from the originating host to a destination computer that are echoed back to the source." (c) [wiki](<https://en.wikipedia.org/wiki/Ping_(networking_utility)>)
 
 Let's give it a try. Just open a terminal and execute `ping 1.1.1.1`. You should see something similar to this:
 
@@ -32,7 +34,7 @@ A lot is going on here. However, most of the work will be done automatically for
 
 Now we need to figure how to send those bits and bytes
 
-## Test it/debug it/Wireshark it!
+## Debugging network with Wireshark
 
 So now we have a good theory behind us to get started. However, to debug our program, it would be helpful to see the actual bits and bytes we send to some IPs. The easiest way to check ANY traffic your machine is using is to use [Wireshark](https://www.wireshark.org/download.html). It is free and open-source software that works on both Windows and macOS. Before we start, let's check if theory and practice align on how the protocol works.
 
@@ -49,7 +51,7 @@ Wireshark is quite powerful and knows how to handle ICMP commands. It will be ve
 
 ## Let's code
 
-Now we have all the building blocks; we can start coding. Unfortunately, node.js has no native support for raw sockets to use ICMP protocol. However, the `raw-socket` npm package supports it using [node-gyp](https://github.com/nodejs/node-gyp) to access system-level APIs.
+Now we have all the building blocks; we can start coding. Unfortunately, Node.js has no native support for raw sockets to use ICMP protocol. However, the `raw-socket` npm package supports it using [node-gyp](https://github.com/nodejs/node-gyp) to access system-level APIs.
 
 So practically, we need to:
 
@@ -129,6 +131,8 @@ function createPingBuffer(identifier, sequenceNumber, payload) {
 }
 ```
 
+You might notice weird BE suffix in the function name, this stands for Big Endian. This is [endianness](https://en.wikipedia.org/wiki/Endianness). Some protocols use LE (little endian). This is just a way to pack
+
 That is it! We should be able to send ping requests now. Let's check if it works using Wireshark.
 
 ![image](./imgs/wireshark-request.png)
@@ -143,7 +147,7 @@ Let's take a closer look at the datagram
 
 ![image](./imgs/ip-header.png)
 
-IHL stands for [Internet Header Length ](https://en.wikipedia.org/wiki/Internet_Protocol_version_4#IHL). It has 4 bits that specify the number of 32-bit (4 bytes) words in the header. Unfortunately, node.js Buffers lacks helper methods to read 4-bit data. It means that we will have to implement it ourselves.
+IHL stands for [Internet Header Length ](https://en.wikipedia.org/wiki/Internet_Protocol_version_4#IHL). It has 4 bits that specify the number of 32-bit (4 bytes) words in the header. Unfortunately, Node.js Buffers lacks helper methods to read 4-bit data. It means that we will have to implement it ourselves.
 
 Here we will need to use [bitwise operations](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_AND). To get the last 4 bits of a byte, we will need to use bitwise `AND`
 
@@ -222,7 +226,7 @@ return buffer;
 
 I intentionally simplified some things and cut some corners. Ideally, we will need to add error logging, keep track of statistics, etc. We also need to make sure to filter out all other ICMP packets that are not part of our ping request by [checking the type of request and identifier](https://github.com/dspinellis/unix-history-repo/blob/BSD-4_3/usr/src/etc/ping.c#L335).
 
-However, I hope it was an interesting journey on how to implement low-level binary protocols, measure time, debug network requests, do bit manipulations, and read the source code.
+However, I hope it was an interesting journey on how to implement low-level binary protocols, measure time, debug network requests, do bit manipulations, and read the source code. There is a lot to learn from other open source project.
 
 I put together all the code here in [this repo](https://github.com/dlitsman/ping-nodejs). It has some extra code to connect all the pieces together. Just run
 

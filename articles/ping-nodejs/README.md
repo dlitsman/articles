@@ -240,3 +240,7 @@ PING 1.1.1.1 (1.1.1.1): 28 data bytes
 36 bytes from 1.1.1.1: icmp_seq=2 ttl=59 time=16.101806640625 ms
 ...
 ```
+
+Published:
+
+- https://hackernoon.com/building-ping-command-in-nodejs-practical-guide-to-buffers-sockets-and-bit-manipulation

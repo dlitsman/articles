@@ -47,7 +47,7 @@ You can also decide to close window at any moment
 pipWindow.close();
 ```
 
-### Detecting feature
+### 3. Detecting feature
 To detect if current runtime supports this API you can use this check:
 
 ```js
@@ -62,7 +62,7 @@ In the example above we did some manual manipulations with pipWindow document DO
 
 Let's dive into the code and build a simple counter that users can control using PiP window or the main page.
 
-### Step 1. Create context
+### Create context
 
 We need a single source of truth to keep track of open window, support of the feature in browser, callbacks to open window, etc. To make it easier to consume, we can make a [Context](https://react.dev/learn/passing-data-deeply-with-context) that will store this information and will make it available for other components in our app.
 
@@ -86,7 +86,6 @@ type PiPProviderProps = {
 
 export function PiPProvider({ children }: PiPProviderProps) {
   // Detect if feature is available
-
   const isSupported = "documentPictureInPicture" in window;
 
   // Expose pipWindow that is currently active
@@ -115,6 +114,7 @@ export function PiPProvider({ children }: PiPProviderProps) {
         setPipWindow(null);
       };
 
+      // It is important to copy all parent widnow styles. Otherwise, there would be no CSS available at all
       const allCSS = [...document.styleSheets]
         .map((styleSheet) =>
           [...styleSheet.cssRules].map((r) => r.cssText).join("")
@@ -144,3 +144,86 @@ export function PiPProvider({ children }: PiPProviderProps) {
   return <PiPContext.Provider value={value}>{children}</PiPContext.Provider>;
 }
 ```
+
+To make it easier to consume this Context we can also introduce helper hook
+
+```ts
+export function usePictureInPicture(): PiPContextType {
+  const context = useContext(PiPContext);
+
+  if (context === undefined) {
+    throw new Error("usePictureInPicture must be used within a PiPContext");
+  }
+
+  return context;
+}
+```
+
+### Mounting
+
+Now, once we have access to pipWindow we can render to it using React API. Since `pipWindow` is not part of our DOM tree that is managed by React we need to use [createPortal](https://react.dev/reference/react-dom/createPortal) API to render to different DOM element.
+
+Let's create `PiPWindow` component that we can use to render inside newly create Document Picture-in-Picture window
+
+```ts
+import { createPortal } from "react-dom";
+
+type PiPWindowProps = {
+  pipWindow: Window;
+  children: React.ReactNode;
+};
+
+export default function PiPWindow({ pipWindow, children }: PiPWindowProps) {
+  return createPortal(
+    <div className="pipRoot">{children}</div>,
+    pipWindow.document.body
+  );
+}
+```
+
+You can now use it in any component. This is minimal example
+
+```ts
+function Example() {
+  const { isSupported, requestPipWindow, pipWindow, closePipWindow } =
+    usePictureInPicture();
+
+  const startPiP = useCallback(() => {
+    requestPipWindow(500, 500);
+  }, [requestPipWindow]);
+
+  return (
+    <div>
+      {/* Make sure to have some fallback in case if API is not supported */}
+      {isSupported ? (
+        <>
+          <button onClick={pipWindow ? closePipWindow : startPiP}>
+            {pipWindow ? "Close PiP" : "Open PiP"}
+          </button>
+          {pipWindow && (
+            <PiPWindow pipWindow={pipWindow}>Hello in PiP!</PiPWindow>
+          )}
+        </>
+      ) : (
+        <div className="error">
+          Document Picture-in-Picture is not supported in this browser
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+This will render Document Picture-in-Picture with our custom component. You can easily add any custom styles or logic there.
+
+![image](./imgs/demo.png)
+
+You can find full source code and slightly more advanced examples in this repo: [https://github.com/dlitsman/document-pip](https://github.com/dlitsman/document-pip)
+
+Or feel free to give a try to online demo: [https://dlitsman.github.io/document-pip/](https://dlitsman.github.io/document-pip/)
+
+## Conclusion
+
+Document Picture-in-Picture is a great addition to the available APIs browsers provide. It opens new UX posibilities for different domains of apps such as video conferencing, productivity, and more. 
+
+In this article, I've shown one of the ways how this API can be integrated with modern React. 

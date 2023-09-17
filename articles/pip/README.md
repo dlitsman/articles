@@ -38,6 +38,12 @@ const pipWindow = await documentPictureInPicture.requestWindow({
 pipWindow.document.body.innerHTML = 'Hello from PiP';
 ```
 
+**NOTE:** It is important to note that you can only open this window in response to use interaction ([User Activation](https://developer.mozilla.org/en-US/docs/Web/API/UserActivation)); otherwise, you will get this error
+
+```
+DOMException: Failed to execute 'requestWindow' on 'DocumentPictureInPicture': Document PiP requires user activation
+```
+
 ### 2. Closing
 
 You can listen to the `pagehide` event to detect when the PiP window is closing. For example, in case a user decides to close the PiP window.
@@ -214,6 +220,8 @@ function Example() {
     requestPipWindow(500, 500);
   }, [requestPipWindow]);
 
+  const [count, setCount] = useState(0);
+
   return (
     <div>
       {/* Make sure to have some fallback in case if API is not supported */}
@@ -231,6 +239,13 @@ function Example() {
                 }}
               >
                 <h3>Hello in PiP!</h3>
+                <button
+                  onClick={() => {
+                    setCount((count) => count + 1);
+                  }}
+                >
+                  Clicks count is {count}
+                </button>
               </div>
             </PiPWindow>
           )}
@@ -259,4 +274,4 @@ Demo with dynamic component example: ![image](./imgs/demo.png)
 
 Document Picture-in-Picture is an excellent addition to the available APIs browsers provide. It opens new UX possibilities for different domains of apps, such as video conferencing, productivity, and more. 
 
-In this article, I've shown how this API can be integrated with modern React using standard Context and Portal API.
+In this article, I've shown how this API can be integrated with modern React using standard Context and Portal API. I've omitted the error handling part for clarity, but this should be trivial to implement.

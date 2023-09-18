@@ -1,4 +1,4 @@
-# Document Picture-in-Picture in React
+# Document Picture-in-Picture in React (with Typescript)
 
 ![image](./imgs/intro.png)
 
@@ -6,7 +6,7 @@
 
 [Picture-in-picture API](https://developer.mozilla.org/en-US/docs/Web/API/Picture-in-Picture_API) has been available in most of browsers for quite some time. However, the main downside was that developers have very limited control over custom controls and look and feel of it, as it only allows to use Video element as PiP element. This forces developers to use (canvas hacks)[https://developer.chrome.com/blog/watch-video-using-picture-in-picture/#show-canvas-element-in-picture-in-picture-window] for any custom UI.
 
-Recent updates in Chrome 116 change that by adding [Document Picture-in-Picture API](https://wicg.github.io/document-picture-in-picture/) support. This creates new possibilities for creating a much richer UX. At the time of writing this article, this feature is supported only in Chrome and Edge. However, hopefully, other browsers will also add support later.
+Recent updates in Chrome 116 change that by adding [Document Picture-in-Picture API](https://wicg.github.io/document-picture-in-picture/) support. This creates new possibilities for creating a much richer UX. At the time of writing this article, this feature is supported only in Chrome and Edge. However, hopefully, other browsers will also add support soon.
 
 This is how the [current state of support looks like](https://caniuse.com/mdn-api_documentpictureinpicture)
 ![image](./imgs/coverage.png)

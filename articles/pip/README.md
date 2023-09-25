@@ -275,3 +275,7 @@ Demo with dynamic component example: ![image](./imgs/demo.png)
 Document Picture-in-Picture is an excellent addition to the available APIs browsers provide. It opens new UX possibilities for different domains of apps, such as video conferencing, productivity, and more. 
 
 In this article, I've shown how this API can be integrated with modern React using standard Context and Portal API. I've omitted the error handling part for clarity, but this should be trivial to implement.
+
+Published:
+
+- https://hackernoon.com/how-to-document-picture-in-picture-in-react-with-typescript

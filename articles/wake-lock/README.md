@@ -112,6 +112,9 @@ This is just a minimal example. However, library offers more control and error h
 
 You can check this minimal demo [here](https://dlitsman.github.io/react-use-wake-lock/?min=1) or check the [full example with support for events and error handling](https://dlitsman.github.io/react-use-wake-lock/)
 
+Full demo
+![image](./imgs/full-demo.webp)
+
 # Conclusion
 
 Using modern browser API helps us build much better UX and bring app like experience to the web. You can find the full source code as well as demo and installation instructions for this example on GitHub https://github.com/dlitsman/react-use-wake-lock.

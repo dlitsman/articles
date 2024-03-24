@@ -84,7 +84,7 @@ However, in order to integrate it to a React-based app it would be much easier t
 
 [react-use-wake-lock](https://github.com/dlitsman/react-use-wake-lock) library offers a simple way to hide complexities of handling async nature of Screen Wake Lock API as well as automatically incorporate auto-reacuaring of a lock in case if browser lost visiblity. It also supports TypeScript and has 100% test-coverage.
 
-Let's see the simpliest example
+Let's examine the simpliest example
 
 First, you need to install this library by running `npm install react-use-wake-lock --save` (or `pnpm` / `yarn` depending on your preference)
 

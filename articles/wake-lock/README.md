@@ -129,3 +129,6 @@ End-to-end demo on iOS (Safari)
 # Conclusion
 
 Leveraging modern browser APIs is a powerful strategy that allows us to construct a superior user experience, effectively bridging the gap between web and native applications by bringing an app-like feel to web. This article serves as a hands-on guide detailing how to utilize the modern Screen Wake Lock API within any application built on React. You can find the complete source code as well as demo and installation instructions for this example on GitHub [https://github.com/dlitsman/react-use-wake-lock](https://github.com/dlitsman/react-use-wake-lock).
+
+Published:
+- https://hackernoon.com/how-to-use-screen-wake-lock-api-in-react-to-manage-screen-lockingdimming-in-a-browser
